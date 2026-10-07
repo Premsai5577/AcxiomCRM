@@ -1,0 +1,38 @@
+name: Build, Test and Deploy AcxiomCRM
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore AcxiomCRM.csproj
+
+    - name: Build Web Application
+      run: dotnet build AcxiomCRM.csproj --configuration Release --no-restore
+
+    - name: Run Quality & Business Rules Test Suite
+      run: dotnet test AcxiomCRM.Tests/AcxiomCRM.Tests.csproj --configuration Release
+
+    - name: Publish Production Application
+      run: dotnet publish AcxiomCRM.csproj --configuration Release --output ./publish /p:UseAppHost=false
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: acxiomcrm-release-package
+        path: ./publish

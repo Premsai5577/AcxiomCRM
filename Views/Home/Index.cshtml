@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="px-4 py-5 my-3 text-center">
+    <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-3">
+        <i class="bi bi-diagram-3-fill display-4"></i>
+    </div>
+    <h1 class="display-5 fw-bold text-dark">AcxiomCRM</h1>
+    <div class="col-lg-7 mx-auto">
+        <p class="lead mb-4 text-secondary">
+            Enterprise Customer Relationship Management platform featuring end-to-end sales lifecycle tracking, role-based authorization (Admin, Manager, Sales Executive), Chart.js visual analytics, and full audit compliance.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4 gap-3 fw-semibold">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
+            </a>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-lg px-4 fw-semibold">
+                <i class="bi bi-person-plus me-1"></i> Register New User
+            </a>
+            <a href="/swagger" target="_blank" class="btn btn-outline-dark btn-lg px-4 fw-semibold">
+                <i class="bi bi-code-slash me-1"></i> REST API Docs
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 py-3 row-cols-1 row-cols-lg-3">
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3">
+            <div class="text-primary mb-3"><i class="bi bi-person-lines-fill fs-2"></i></div>
+            <h5 class="fw-bold">Lead-to-Customer Pipeline</h5>
+            <p class="text-muted">Capture prospective leads, qualify status transitions, track pipeline stages, and convert qualified leads into customer records seamlessly.</p>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3">
+            <div class="text-success mb-3"><i class="bi bi-shield-check fs-2"></i></div>
+            <h5 class="fw-bold">Multi-Level Security & Auditing</h5>
+            <p class="text-muted">ASP.NET Core Identity with password hashing, account lockout protection, anti-forgery tokens, role authorization, and complete immutable audit logging.</p>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3">
+            <div class="text-warning mb-3"><i class="bi bi-pie-chart-fill fs-2"></i></div>
+            <h5 class="fw-bold">Executive Analytics & KPIs</h5>
+            <p class="text-muted">Real-time Chart.js dashboards with lead status breakdowns, stage pipeline valuations, weighted revenue forecasts, and exportable reports.</p>
+        </div>
+    </div>
+</div>

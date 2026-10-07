@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AcxiomCRM</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AcxiomCRM.styles.css" asp-append-version="true" />
+    <!-- Chart.js for Dashboard Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --crm-primary: #1e3a8a;
+            --crm-secondary: #0284c7;
+        }
+        .navbar-crm {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-crm .navbar-brand {
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .navbar-crm .nav-link {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            padding: 0.5rem 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .navbar-crm .nav-link:hover, .navbar-crm .nav-link.active {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .table-custom th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .badge-role {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-crm py-2">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-diagram-3-fill text-primary fs-4"></i>
+                    <span>AcxiomCRM</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#crmNavbar" aria-controls="crmNavbar"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="crmNavbar">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Customer" asp-action="Index"><i class="bi bi-people me-1"></i> Customers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Lead" asp-action="Index"><i class="bi bi-person-lines-fill me-1"></i> Leads</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Opportunity" asp-action="Index"><i class="bi bi-graph-up-arrow me-1"></i> Opportunities</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FollowUp" asp-action="Index"><i class="bi bi-calendar-check me-1"></i> Follow-Ups</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Activity" asp-action="Index"><i class="bi bi-list-task me-1"></i> Activities</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reports" asp-action="Index"><i class="bi bi-pie-chart me-1"></i> Reports</a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="UserManagement" asp-action="Index"><i class="bi bi-person-badge me-1"></i> Users</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AuditLog" asp-action="Index"><i class="bi bi-shield-lock me-1"></i> Audit Trail</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" href="/swagger" target="_blank" title="REST API Specification"><i class="bi bi-code-slash me-1"></i> API Docs</a>
+                            </li>
+                        </ul>
+                    }
+                    <div class="d-flex align-items-center ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid px-4 py-4 flex-grow-1">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-white border-top py-3 mt-auto text-muted">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <span>&copy; 2026 - <strong>AcxiomCRM</strong> Enterprise Solution</span>
+            <div class="d-flex gap-3 small">
+                <span><i class="bi bi-shield-check text-success"></i> Identity Protected</span>
+                <span><i class="bi bi-database-check text-primary"></i> EF Core SQLite</span>
+                <a href="/swagger" target="_blank" class="text-decoration-none"><i class="bi bi-file-earmark-code"></i> REST API</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,101 @@
+@model IEnumerable<AcxiomCRM.ViewModels.UserListItemViewModel>
+@{
+    ViewData["Title"] = "User & Role Administration";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-person-badge text-danger me-2"></i>User & Role Management</h3>
+        <span class="text-muted small">Administer user credentials, security roles, and lockout status</span>
+    </div>
+    <a asp-action="Create" class="btn btn-danger fw-semibold shadow-sm"><i class="bi bi-person-plus me-1"></i> Add New User</a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email / Username</th>
+                    <th>Security Role</th>
+                    <th>Account Status</th>
+                    <th>Lockout Status</th>
+                    <th>Failed Attempts</th>
+                    <th>Created On</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    var roleBadge = u.Role switch
+                    {
+                        "Admin" => "bg-danger",
+                        "Manager" => "bg-warning text-dark",
+                        _ => "bg-info text-dark"
+                    };
+
+                    <tr>
+                        <td class="fw-bold text-dark">
+                            <i class="bi bi-person-circle text-muted me-1"></i> @u.FullName
+                        </td>
+                        <td>@u.Email</td>
+                        <td><span class="badge @roleBadge">@u.Role</span></td>
+                        <td>
+                            @if (u.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            @if (u.IsLockedOut)
+                            {
+                                <span class="badge bg-danger"><i class="bi bi-lock-fill"></i> Locked Out</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-success border"><i class="bi bi-unlock"></i> Normal</span>
+                            }
+                        </td>
+                        <td>
+                            @if (u.AccessFailedCount > 0)
+                            {
+                                <span class="badge bg-warning text-dark">@u.AccessFailedCount / 5</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">0</span>
+                            }
+                        </td>
+                        <td class="small text-muted">@u.CreatedDate.ToString("dd MMM yyyy")</td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-outline-primary" title="Edit Role / Reset Password"><i class="bi bi-pencil"></i></a>
+                                
+                                @if (u.IsLockedOut)
+                                {
+                                    <form asp-action="Unlock" asp-route-id="@u.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-warning" title="Unlock Account"><i class="bi bi-unlock-fill"></i></button>
+                                    </form>
+                                }
+
+                                <form asp-action="ToggleActive" asp-route-id="@u.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn @(u.IsActive ? "btn-outline-secondary" : "btn-outline-success")" title="@(u.IsActive ? "Deactivate" : "Activate")">
+                                        <i class="bi @(u.IsActive ? "bi-person-slash" : "bi-person-check")"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+@model AcxiomCRM.Models.FollowUp
+@{
+    ViewData["Title"] = "Delete Follow-Up";
+}
+
+<div class="row justify-content-center pt-3">
+    <div class="col-md-6">
+        <div class="card border-danger shadow-sm rounded-3">
+            <div class="card-header bg-danger text-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Follow-Up Deletion</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-danger fw-semibold">Are you sure you want to delete this follow-up record? This action will be audited.</p>
+
+                <div class="bg-light p-3 rounded-2 mb-4 border">
+                    <div class="fw-bold fs-5 text-dark">@Model.Subject</div>
+                    <div class="text-muted small">Date: @Model.FollowUpDate.ToString("dd MMM yyyy") &bull; Type: @Model.FollowUpType &bull; Status: @Model.Status</div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="FollowUpId" />
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-semibold"><i class="bi bi-trash me-1"></i> Delete Follow-Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

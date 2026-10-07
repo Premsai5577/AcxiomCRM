@@ -1,0 +1,121 @@
+@model IEnumerable<AcxiomCRM.Models.AuditLog>
+@{
+    ViewData["Title"] = "Security & Audit Trail";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-shield-check text-success me-2"></i>Audit Trail & Compliance Log</h3>
+        <span class="text-muted small">Append-only immutable record of system security and business activities</span>
+    </div>
+</div>
+
+<!-- Search & Filter Card (Page 6 & 18) -->
+<div class="card border-0 shadow-sm mb-4 rounded-3">
+    <div class="card-body p-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">User</label>
+                <input type="text" name="userFilter" value="@ViewData["UserFilter"]" class="form-control form-control-sm" placeholder="User name/email..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Module / Entity</label>
+                <select name="moduleFilter" class="form-select form-select-sm">
+                    <option value="">All Modules</option>
+                    <option value="Customer" selected="@(ViewData["ModuleFilter"]?.ToString() == "Customer")">Customer</option>
+                    <option value="Lead" selected="@(ViewData["ModuleFilter"]?.ToString() == "Lead")">Lead</option>
+                    <option value="Opportunity" selected="@(ViewData["ModuleFilter"]?.ToString() == "Opportunity")">Opportunity</option>
+                    <option value="FollowUp" selected="@(ViewData["ModuleFilter"]?.ToString() == "FollowUp")">FollowUp</option>
+                    <option value="Activity" selected="@(ViewData["ModuleFilter"]?.ToString() == "Activity")">Activity</option>
+                    <option value="User" selected="@(ViewData["ModuleFilter"]?.ToString() == "User")">User</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Action</label>
+                <select name="actionFilter" class="form-select form-select-sm">
+                    <option value="">All Actions</option>
+                    <option value="Login" selected="@(ViewData["ActionFilter"]?.ToString() == "Login")">Login</option>
+                    <option value="Failed Login" selected="@(ViewData["ActionFilter"]?.ToString() == "Failed Login")">Failed Login</option>
+                    <option value="Logout" selected="@(ViewData["ActionFilter"]?.ToString() == "Logout")">Logout</option>
+                    <option value="Create" selected="@(ViewData["ActionFilter"]?.ToString() == "Create")">Create</option>
+                    <option value="Update" selected="@(ViewData["ActionFilter"]?.ToString() == "Update")">Update</option>
+                    <option value="Delete" selected="@(ViewData["ActionFilter"]?.ToString() == "Delete")">Delete</option>
+                    <option value="Convert" selected="@(ViewData["ActionFilter"]?.ToString() == "Convert")">Convert</option>
+                    <option value="Security" selected="@(ViewData["ActionFilter"]?.ToString() == "Security")">Security</option>
+                    <option value="Role Change" selected="@(ViewData["ActionFilter"]?.ToString() == "Role Change")">Role Change</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Start Date</label>
+                <input type="date" name="startDate" value="@ViewData["StartDate"]" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">End Date</label>
+                <input type="date" name="endDate" value="@ViewData["EndDate"]" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-filter"></i> Apply Filters</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Audit Log Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle mb-0 font-monospace small">
+            <thead>
+                <tr>
+                    <th>Timestamp (UTC)</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Entity</th>
+                    <th>Record ID</th>
+                    <th>Old Value</th>
+                    <th>New Value</th>
+                    <th>IP Address</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted font-sans-serif">
+                            <i class="bi bi-journal-x fs-3 d-block mb-2"></i>
+                            No audit events found for current filter.
+                        </td>
+                    </tr>
+                }
+                @foreach (var log in Model)
+                {
+                    var actionBadge = log.Action switch
+                    {
+                        "Login" => "bg-success",
+                        "Failed Login" => "bg-danger",
+                        "Logout" => "bg-secondary",
+                        "Create" => "bg-primary",
+                        "Update" => "bg-info text-dark",
+                        "Delete" => "bg-danger",
+                        "Convert" => "bg-warning text-dark",
+                        "Security" => "bg-dark",
+                        "Role Change" => "bg-warning text-dark",
+                        _ => "bg-light text-dark"
+                    };
+
+                    <tr>
+                        <td class="text-nowrap">@log.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        <td><strong>@(log.UserName ?? "System")</strong></td>
+                        <td><span class="badge @actionBadge">@log.Action</span></td>
+                        <td><span class="badge bg-light text-dark border">@log.EntityName</span></td>
+                        <td>@(log.RecordId ?? "-")</td>
+                        <td class="text-truncate" style="max-width: 150px;" title="@log.OldValue">@(log.OldValue ?? "-")</td>
+                        <td class="text-truncate" style="max-width: 150px;" title="@log.NewValue">@(log.NewValue ?? "-")</td>
+                        <td>@(log.IpAddress ?? "127.0.0.1")</td>
+                        <td class="text-truncate" style="max-width: 200px;" title="@log.Details">@(log.Details ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

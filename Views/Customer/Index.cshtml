@@ -1,0 +1,112 @@
+@model IEnumerable<AcxiomCRM.Models.Customer>
+@{
+    ViewData["Title"] = "Customer Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-people text-primary me-2"></i>Customers</h3>
+        <span class="text-muted small">Manage customer master directory and history</span>
+    </div>
+    <a asp-action="Create" class="btn btn-primary fw-semibold shadow-sm"><i class="bi bi-plus-circle me-1"></i> New Customer</a>
+</div>
+
+<!-- Search & Filter Card (Page 4 & 17) -->
+<div class="card border-0 shadow-sm mb-4 rounded-3">
+    <div class="card-body p-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold text-muted">Customer Name</label>
+                <input type="text" name="searchName" value="@ViewData["SearchName"]" class="form-control form-control-sm" placeholder="Search by name..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Email</label>
+                <input type="text" name="searchEmail" value="@ViewData["SearchEmail"]" class="form-control form-control-sm" placeholder="Email..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Phone</label>
+                <input type="text" name="searchPhone" value="@ViewData["SearchPhone"]" class="form-control form-control-sm" placeholder="Phone..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Company</label>
+                <input type="text" name="searchCompany" value="@ViewData["SearchCompany"]" class="form-control form-control-sm" placeholder="Company..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Status</label>
+                <select name="statusFilter" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="Active" selected="@(ViewData["StatusFilter"]?.ToString() == "Active")">Active</option>
+                    <option value="Inactive" selected="@(ViewData["StatusFilter"]?.ToString() == "Inactive")">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Customer List Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Customer Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Company</th>
+                    <th>City / State</th>
+                    <th>Status</th>
+                    <th>Assigned To</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            No customers found matching your criteria.
+                        </td>
+                    </tr>
+                }
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td><span class="badge bg-light text-dark border">@c.CustomerCode</span></td>
+                        <td class="fw-bold text-dark">
+                            <a asp-action="Details" asp-route-id="@c.CustomerId" class="text-decoration-none">@c.CustomerName</a>
+                        </td>
+                        <td><i class="bi bi-envelope text-muted me-1"></i> @c.Email</td>
+                        <td><i class="bi bi-telephone text-muted me-1"></i> @c.Phone</td>
+                        <td>@(c.CompanyName ?? "-")</td>
+                        <td>@(!string.IsNullOrEmpty(c.City) ? $"{c.City}, {c.State}" : "-")</td>
+                        <td>
+                            @if (c.Status == "Active")
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@c.Status</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="small text-muted"><i class="bi bi-person"></i> @(c.AssignedUser?.FullName ?? "Unassigned")</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Details" asp-route-id="@c.CustomerId" class="btn btn-outline-secondary" title="Details"><i class="bi bi-eye"></i></a>
+                                <a asp-action="Edit" asp-route-id="@c.CustomerId" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Delete" asp-route-id="@c.CustomerId" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

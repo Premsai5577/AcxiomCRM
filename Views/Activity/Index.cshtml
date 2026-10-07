@@ -1,0 +1,119 @@
+@model IEnumerable<AcxiomCRM.Models.Activity>
+@{
+    ViewData["Title"] = "Customer Activities";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-list-task text-primary me-2"></i>Activity Management</h3>
+        <span class="text-muted small">Record customer touchpoints: Calls, Meetings, Emails, and Tasks</span>
+    </div>
+    <a asp-action="Create" class="btn btn-primary fw-semibold shadow-sm"><i class="bi bi-plus-circle me-1"></i> Log Activity</a>
+</div>
+
+<!-- Search & Filter Card (Page 14, 15, 17) -->
+<div class="card border-0 shadow-sm mb-4 rounded-3">
+    <div class="card-body p-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold text-muted">Activity Type</label>
+                <select name="activityType" class="form-select form-select-sm">
+                    <option value="">All Types</option>
+                    <option value="Call" selected="@(ViewData["ActivityType"]?.ToString() == "Call")">Call</option>
+                    <option value="Meeting" selected="@(ViewData["ActivityType"]?.ToString() == "Meeting")">Meeting</option>
+                    <option value="Email" selected="@(ViewData["ActivityType"]?.ToString() == "Email")">Email</option>
+                    <option value="Task" selected="@(ViewData["ActivityType"]?.ToString() == "Task")">Task</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold text-muted">Date</label>
+                <input type="date" name="activityDate" value="@ViewData["ActivityDate"]" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold text-muted">Status</label>
+                <select name="statusFilter" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="Completed" selected="@(ViewData["StatusFilter"]?.ToString() == "Completed")">Completed</option>
+                    <option value="Planned" selected="@(ViewData["StatusFilter"]?.ToString() == "Planned")">Planned</option>
+                    <option value="Cancelled" selected="@(ViewData["StatusFilter"]?.ToString() == "Cancelled")">Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-muted">Assigned User</label>
+                <select name="assignedFilter" class="form-select form-select-sm" asp-items="ViewBag.UsersList">
+                    <option value="">All Users</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Activity Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Associated With</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            No activities recorded.
+                        </td>
+                    </tr>
+                }
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                @if (a.ActivityType == "Call") { <i class="bi bi-telephone text-primary me-1"></i> }
+                                else if (a.ActivityType == "Meeting") { <i class="bi bi-people text-success me-1"></i> }
+                                else if (a.ActivityType == "Email") { <i class="bi bi-envelope text-info me-1"></i> }
+                                else { <i class="bi bi-list-check text-secondary me-1"></i> }
+                                @a.ActivityType
+                            </span>
+                        </td>
+                        <td class="fw-bold text-dark">@a.Subject</td>
+                        <td><span class="badge bg-light text-dark border">@a.ActivityDate.ToString("dd MMM yyyy")</span></td>
+                        <td>
+                            @if (a.Customer != null)
+                            {
+                                <span class="small"><i class="bi bi-person-badge text-primary"></i> @a.Customer.CustomerName</span>
+                            }
+                            else if (a.Lead != null)
+                            {
+                                <span class="small"><i class="bi bi-person-lines-fill text-info"></i> @a.Lead.LeadName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+                        <td><span class="small text-muted"><i class="bi bi-person"></i> @(a.AssignedUser?.FullName ?? "Unassigned")</span></td>
+                        <td><span class="badge @(a.Status == "Completed" ? "bg-success" : "bg-secondary")">@a.Status</span></td>
+                        <td class="small text-muted text-truncate" style="max-width: 250px;">@(a.Description ?? "-")</td>
+                        <td class="text-end">
+                            <a asp-action="Delete" asp-route-id="@a.ActivityId" class="btn btn-outline-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

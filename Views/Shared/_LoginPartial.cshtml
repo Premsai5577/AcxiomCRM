@@ -1,0 +1,54 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav align-items-center">
+@if (SignInManager.IsSignedIn(User))
+{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var roles = currentUser != null ? await UserManager.GetRolesAsync(currentUser) : new List<string>();
+    var roleName = roles.FirstOrDefault() ?? "User";
+    var badgeClass = roleName switch
+    {
+        "Admin" => "bg-danger",
+        "Manager" => "bg-warning text-dark",
+        _ => "bg-info text-dark"
+    };
+
+    <li class="nav-item me-2">
+        <span class="badge @badgeClass"><i class="bi bi-shield-check"></i> @roleName</span>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i> @(currentUser?.FullName ?? User.Identity?.Name)
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+            <li class="dropdown-header">
+                <strong>@User.Identity?.Name</strong>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li><a class="dropdown-item" asp-controller="UserManagement" asp-action="Index"><i class="bi bi-people"></i> Manage Users</a></li>
+                <li><a class="dropdown-item" asp-controller="AuditLog" asp-action="Index"><i class="bi bi-journal-text"></i> Audit Trail</a></li>
+                <li><hr class="dropdown-divider"></li>
+            }
+            <li>
+                <form class="form-inline px-3 py-1" asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark fw-semibold" asp-controller="Account" asp-action="Register"><i class="bi bi-person-plus"></i> Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="btn btn-primary btn-sm ms-2 px-3" asp-controller="Account" asp-action="Login"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+    </li>
+}
+</ul>

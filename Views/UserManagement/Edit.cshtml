@@ -1,0 +1,62 @@
+@model AcxiomCRM.ViewModels.EditUserViewModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pencil-square text-danger me-2"></i>Edit User Profile</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-semibold"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Role" class="form-label fw-semibold"></label>
+                        <select asp-for="Role" class="form-select" asp-items="ViewBag.Roles"></select>
+                        <span asp-validation-for="Role" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check form-switch">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveSwitch" />
+                        <label class="form-check-label fw-semibold" for="isActiveSwitch">Account Active</label>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="mb-3">
+                        <label asp-for="NewPassword" class="form-label fw-semibold text-danger"><i class="bi bi-key me-1"></i> Admin Password Reset</label>
+                        <input asp-for="NewPassword" class="form-control" placeholder="Leave blank to keep current password" />
+                        <span asp-validation-for="NewPassword" class="text-danger small"></span>
+                        <div class="form-text small">Only fill this if you want to override and reset the user's password. Must follow complexity rules.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-semibold"><i class="bi bi-save me-1"></i> Update User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
