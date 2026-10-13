@@ -26,6 +26,17 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Data Source=AcxiomCRM.db";
 
+var match = System.Text.RegularExpressions.Regex.Match(connectionString, @"(?:Data Source|DataSource)\s*=\s*([^;]+)");
+if (match.Success)
+{
+    var dbPath = match.Groups[1].Value.Trim();
+    var dir = Path.GetDirectoryName(dbPath);
+    if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+    {
+        Directory.CreateDirectory(dir);
+    }
+}
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
@@ -93,19 +104,19 @@ using (var scope = app.Services.CreateScope())
 }
 
 // HTTP request pipeline
+app.UseForwardedHeaders();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
+    app.UseHttpsRedirection();
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
 
-app.UseForwardedHeaders();
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // Swagger UI accessible at /swagger

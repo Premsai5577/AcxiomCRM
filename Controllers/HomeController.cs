@@ -30,6 +30,17 @@ public class HomeController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var exceptionFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        if (exceptionFeature?.Error != null)
+        {
+            _logger.LogError(exceptionFeature.Error, "Unhandled exception on path: {Path}", exceptionFeature.Path);
+        }
+
+        return View(new ErrorViewModel 
+        { 
+            RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+            ErrorMessage = exceptionFeature?.Error?.Message,
+            StackTrace = exceptionFeature?.Error?.StackTrace
+        });
     }
 }

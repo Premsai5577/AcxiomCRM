@@ -12,8 +12,10 @@ RUN dotnet publish "AcxiomCRM.csproj" -c Release -o /app/publish /p:UseAppHost=f
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+USER root
 WORKDIR /app
 COPY --from=build /app/publish .
+RUN mkdir -p /app/data && chmod -R 777 /app
 
 # Expose ports
 EXPOSE 8080
