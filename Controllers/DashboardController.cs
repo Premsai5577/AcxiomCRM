@@ -67,10 +67,14 @@ public class DashboardController : Controller
         model.WeightedPipelineValue = openOpps.Sum(o => o.Amount * o.Probability / 100m);
 
         // Chart 1: Lead Status breakdown
-        var leadsByStatus = await leadsQuery
-            .GroupBy(l => l.Status)
-            .Select(g => new { Status = g.Key, Count = g.Count() })
+        var allLeadsStatus = await leadsQuery
+            .Select(l => l.Status)
             .ToListAsync();
+
+        var leadsByStatus = allLeadsStatus
+            .GroupBy(l => l)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToList();
 
         string[] standardLeadStatuses = { "New", "Contacted", "Qualified", "Lost", "Converted" };
         foreach (var status in standardLeadStatuses)
@@ -79,11 +83,15 @@ public class DashboardController : Controller
             model.LeadStatusCounts[status] = match?.Count ?? 0;
         }
 
-        // Chart 2: Opportunity Pipeline stage amounts
-        var oppsByStage = await oppsQuery
+        // Chart 2: Opportunity Pipeline stage amounts (evaluated in-memory for SQLite decimal support)
+        var allOppsForStages = await oppsQuery
+            .Select(o => new { o.Stage, o.Amount })
+            .ToListAsync();
+
+        var oppsByStage = allOppsForStages
             .GroupBy(o => o.Stage)
             .Select(g => new { Stage = g.Key, TotalAmount = g.Sum(x => x.Amount) })
-            .ToListAsync();
+            .ToList();
 
         string[] standardStages = { "Qualification", "Proposal", "Negotiation", "Won", "Lost" };
         foreach (var stage in standardStages)
