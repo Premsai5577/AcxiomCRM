@@ -131,12 +131,15 @@ public class DashboardController : Controller
             .Take(5)
             .ToListAsync();
 
-        model.TopOpportunities = await oppsQuery
+        var topOpenOpps = await oppsQuery
             .Include(o => o.Customer)
             .Where(o => o.Stage != "Won" && o.Stage != "Lost")
+            .ToListAsync();
+
+        model.TopOpportunities = topOpenOpps
             .OrderByDescending(o => o.Amount)
             .Take(5)
-            .ToListAsync();
+            .ToList();
 
         return View(model);
     }

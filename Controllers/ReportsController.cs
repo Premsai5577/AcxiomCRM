@@ -107,7 +107,8 @@ public class ReportsController : Controller
                 if (endDate.HasValue) pipeQuery = pipeQuery.Where(o => o.CreatedDate <= endDate.Value.Date.AddDays(1).AddTicks(-1));
                 if (!string.IsNullOrEmpty(selectedUser)) pipeQuery = pipeQuery.Where(o => o.AssignedTo == selectedUser);
 
-                model.Opportunities = await pipeQuery.OrderByDescending(o => o.Amount).ToListAsync();
+                var pipeOpps = await pipeQuery.ToListAsync();
+                model.Opportunities = pipeOpps.OrderByDescending(o => o.Amount).ToList();
                 model.TotalPipeline = model.Opportunities.Where(o => o.Stage != "Lost").Sum(o => o.Amount);
                 model.WeightedPipeline = model.Opportunities.Where(o => o.Stage != "Lost").Sum(o => o.Amount * o.Probability / 100m);
                 model.StageBreakdown = model.Opportunities.GroupBy(o => o.Stage).ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
