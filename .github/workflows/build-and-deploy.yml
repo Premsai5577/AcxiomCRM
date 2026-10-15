@@ -1,4 +1,4 @@
-name: Build, Test and Deploy AcxiomCRM
+name: Build, Test and Deploy P-CRM
 
 on:
   push:
@@ -34,5 +34,5 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: acxiomcrm-release-package
+        name: p-crm-release-package
         path: ./publish

@@ -1,18 +1,18 @@
-# AcxiomCRM — Enterprise Customer Relationship Management System
+# P-CRM — Enterprise Customer Relationship Management System
 
-[![Build and Test](https://github.com/Premsai5577/AcxiomCRM/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/Premsai5577/AcxiomCRM/actions)
+[![Build and Test](https://github.com/Premsai5577/p-crm/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/Premsai5577/p-crm/actions)
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
 [![Identity](https://img.shields.io/badge/Security-ASP.NET%20Identity-success.svg)](https://learn.microsoft.com/aspnet/core/security/authentication/identity)
 [![EF Core](https://img.shields.io/badge/ORM-Entity%20Framework%20Core%208-purple.svg)](https://learn.microsoft.com/ef/core/)
 [![Chart.js](https://img.shields.io/badge/Visuals-Chart.js-orange.svg)](https://www.chartjs.org/)
 
-**AcxiomCRM** is a role-based, production-ready enterprise CRM web application designed to manage the entire sales lifecycle—from lead capture and qualification to customer onboarding, opportunity pipeline forecasting, follow-up scheduling, and immutable audit compliance.
+**P-CRM** is a role-based, production-ready enterprise CRM web application designed to manage the entire sales lifecycle—from lead capture and qualification to customer onboarding, opportunity pipeline forecasting, follow-up scheduling, and immutable audit compliance.
 
 ---
 
 ## 🌟 Key Functional Modules
 
-### 1. Application Shell & Navigation (`AcxiomCRM`)
+### 1. Application Shell & Navigation (`P-CRM`)
 - Responsive Bootstrap 5 modern UI with role-aware navigation bar, user status badges, action toasts, and confirmation dialogs.
 - Protection against unauthorized and anonymous access to protected CRM routes.
 
@@ -123,8 +123,8 @@
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Premsai5577/AcxiomCRM.git
-   cd AcxiomCRM
+   git clone https://github.com/Premsai5577/p-crm.git
+   cd p-crm
    ```
 2. Build the solution:
    ```bash
@@ -150,11 +150,11 @@ The application includes a production-ready, multi-stage `Dockerfile`.
 
 1. **Build Docker image**:
    ```bash
-   docker build -t acxiomcrm:latest .
+   docker build -t p-crm:latest .
    ```
 2. **Run container**:
    ```bash
-   docker run -d -p 8080:8080 --name acxiomcrm-app acxiomcrm:latest
+   docker run -d -p 8080:8080 --name p-crm-app p-crm:latest
    ```
 3. Access at **`http://localhost:8080`**.
 

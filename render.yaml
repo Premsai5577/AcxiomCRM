@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: acxiomcrm
+    name: p-crm
     runtime: docker
     plan: free
     region: oregon
