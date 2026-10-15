@@ -4,15 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-AcxiomCRM-7d5e4072-6b7e-4f33-8905-ac0d6eab4ec9</UserSecretsId>
+    <RootNamespace>AcxiomCRM</RootNamespace>
+    <AssemblyName>p-crm</AssemblyName>
+    <UserSecretsId>aspnet-p-crm-7d5e4072-6b7e-4f33-8905-ac0d6eab4ec9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
-    <Compile Remove="AcxiomCRM.Tests\**" />
-    <Content Remove="AcxiomCRM.Tests\**" />
-    <EmbeddedResource Remove="AcxiomCRM.Tests\**" />
-    <None Remove="AcxiomCRM.Tests\**" />
+    <Compile Remove="p-crm.Tests\**" />
+    <Content Remove="p-crm.Tests\**" />
+    <EmbeddedResource Remove="p-crm.Tests\**" />
+    <None Remove="p-crm.Tests\**" />
   </ItemGroup>
 
   <ItemGroup>

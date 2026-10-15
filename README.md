@@ -165,7 +165,7 @@ The application includes a production-ready, multi-stage `Dockerfile`.
 1. Connect this repository to your cloud provider (e.g. [Render](https://render.com), [Railway](https://railway.app), or [Azure App Service](https://azure.microsoft.com/services/app-service/)).
 2. Select **Docker** or **.NET 8** environment.
 3. Build command: `dotnet publish -c Release -o out`
-4. Start command: `dotnet out/AcxiomCRM.dll`
+4. Start command: `dotnet out/p-crm.dll`
 
 ---
 

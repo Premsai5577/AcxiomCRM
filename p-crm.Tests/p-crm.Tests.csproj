@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AcxiomCRM.csproj" />
+    <ProjectReference Include="..\p-crm.csproj" />
   </ItemGroup>
 
 </Project>
